@@ -8,7 +8,7 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "ProjectManager"
-include ':app'
+include ':module'
 include ':module-interface'
 include ':module-bridge-stub'
 project(':module-interface').projectDir = new File(rootDir, '../submodules/blokkok-modsys/module-interface/')

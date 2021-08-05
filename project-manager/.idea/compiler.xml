@@ -2,7 +2,7 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <bytecodeTargetLevel target="1.7">
-      <module name="ProjectManager.app" target="11" />
+      <module name="ProjectManager.module" target="11" />
     </bytecodeTargetLevel>
   </component>
 </project>
