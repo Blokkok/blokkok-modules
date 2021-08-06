@@ -29,6 +29,7 @@ class Essentials : Module() {
             val context = comContext.invokeFunction("get_application_context") as Context
             val fragmentManager = comContext.invokeFunction("support_fragment_manager") as FragmentManager
             val drawerFragContainerId = comContext.invokeFunction("drawer_fragment_container_id") as Int
+            val mainFragContainerId = comContext.invokeFunction("main_fragment_container_id") as Int
             val mainDrawerMenu = comContext.invokeFunction("main_drawer_menu") as Menu
 
             // Essential utilities =====
@@ -71,6 +72,36 @@ class Essentials : Module() {
                 return@createFunction null
             }
 
+            // Utilities in doing fragment-related stuff
+            namespace("fragment") {
+                createFunction("start_fragment") { args ->
+                    val fragment = args["fragment"] as? Fragment
+                    val view = args["view"] as? View
+
+                    val transaction = fragmentManager.beginTransaction()
+
+                    transaction
+                        .replace(mainFragContainerId,
+                            when {
+                                fragment != null -> fragment
+                                view != null -> ModifiableViewFragment { _,_,_ -> view }
+
+                                else -> throw IllegalArgumentException(
+                                    "There must be either one non-null argument from fragment or view"
+                                )
+                            }
+                        )
+                        .addToBackStack(null)
+                        .commit()
+
+                    return@createFunction null
+                }
+
+                createFunction("go_back") {
+                    fragmentManager.popBackStack()
+                }
+            }
+
             // Utilities in modifying the drawer on the main page
             namespace("main_drawer") {
                 createFunction("create_item") { args ->
@@ -82,7 +113,7 @@ class Essentials : Module() {
                     mainDrawerMenu.add(name)
                     val menuItem = mainDrawerMenu.children.find { it.title == name }!!
 
-                    icon?.let { menuItem.icon = BitmapDrawable(icon) }
+                    icon?.let { menuItem.icon = BitmapDrawable(context.resources, icon) }
 
                     when {
                         view != null -> {
