@@ -1,10 +1,11 @@
 {
-  "name": "Project Manager",
-  "description": "Project Manager module used to manage and display your projects",
+  "id": "blokkok-essentials",
+  "name": "Essentials",
+  "description": "Essentials module used to execute amazing stuff with just a single function!",
   "version": "1",
   "library_version": "0.1",
   "author": "Blokkok",
-  "website": "https://github.com/Blokkok/blokkok-modules/tree/main/project-manager/",
-  "classpath": "com.blokkok.mod.project.manager.ProjectManager",
+  "website": "https://github.com/Blokkok/blokkok-modules/tree/main/essentials/",
+  "classpath": "com.blokkok.mod.essentials.Essentials",
   "jar": "module.jar"
 }
