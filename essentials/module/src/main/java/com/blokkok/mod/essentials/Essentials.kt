@@ -1,11 +1,13 @@
 package com.blokkok.mod.essentials
 
 import android.content.Context
+import android.content.DialogInterface
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.view.*
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.core.view.children
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -21,6 +23,7 @@ class Essentials : Module() {
     // A list of pair of menu item name and it's fragment
     private val registeredDrawerItems: ArrayList<Pair<String, Fragment>> = ArrayList()
 
+    @Suppress("UNCHECKED_CAST")
     override fun onLoaded(comContext: CommunicationContext) {
         comContext.run {
             val context = comContext.invokeFunction("get_application_context") as Context
@@ -35,6 +38,35 @@ class Essentials : Module() {
                 val duration = args["duration"] as? Int
 
                 Toast.makeText(context, text, duration ?: Toast.LENGTH_SHORT).show()
+
+                return@createFunction null
+            }
+
+            createFunction("alert_dialog") { args ->
+                val title = args["title"] as String
+                val content = args["content"] as String
+                val positiveText = args["positive_text"] as? String
+                val positiveHandler = args["positive_handler"] as? ((DialogInterface) -> Unit)
+                val negativeText = args["negative_text"] as? String
+                val negativeHandler = args["negative_handler"] as? ((DialogInterface) -> Unit)
+
+                val builder = AlertDialog.Builder(context)
+                    .setTitle(title)
+                    .setMessage(content)
+
+                positiveText?.let {
+                    builder.setPositiveButton(it) { dialog, _ ->
+                        positiveHandler?.invoke(dialog)
+                    }
+                }
+
+                negativeText?.let {
+                    builder.setNegativeButton(it) { dialog, _ ->
+                        negativeHandler?.invoke(dialog)
+                    }
+                }
+
+                builder.create().show()
 
                 return@createFunction null
             }
