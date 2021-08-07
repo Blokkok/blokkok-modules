@@ -147,7 +147,7 @@ class Essentials : Module() {
                 }
             }
 
-            // For listening to MainActivity's onNavigationItemSelected
+            // For listening to MainActivity's onNavigationItemSelected, don't use this on your module
             createFunction("onNavigationItemSelected") {
                 val menuItem = it["menu_item"] as MenuItem
 
