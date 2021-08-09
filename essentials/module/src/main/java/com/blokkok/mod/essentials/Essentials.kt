@@ -4,11 +4,9 @@ import android.content.Context
 import android.content.DialogInterface
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
-import android.os.Bundle
 import android.view.*
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.core.view.children
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.blokkok.modsys.communication.CommunicationContext
@@ -21,7 +19,7 @@ class Essentials : Module() {
     )
 
     // A list of pair of menu item name and it's fragment
-    private val registeredDrawerItems: ArrayList<Pair<String, Fragment>> = ArrayList()
+    private val registeredDrawerItems: ArrayList<DrawerItem> = ArrayList()
 
     @Suppress("UNCHECKED_CAST")
     override fun onLoaded(comContext: CommunicationContext) {
@@ -31,6 +29,9 @@ class Essentials : Module() {
             val drawerFragContainerId = comContext.invokeFunction("drawer_fragment_container_id") as Int
             val mainFragContainerId = comContext.invokeFunction("main_fragment_container_id") as Int
             val mainDrawerMenu = comContext.invokeFunction("main_drawer_menu") as Menu
+
+            val drawerMainGroupId = comContext.invokeFunction("drawer_menu_main_group_id") as Int
+            val drawerSocialGroupId = comContext.invokeFunction("drawer_menu_social_group_id") as Int
 
             // Essential utilities =====
 
@@ -104,14 +105,39 @@ class Essentials : Module() {
 
             // Utilities in modifying the drawer on the main page
             namespace("main_drawer") {
+
+                /* This function accepts these arguments:
+                 *
+                 * "name" String - The menu name (Required)
+                 * "group" String - The group where this menu will be added to (Optional) (can only be "main", "social")
+                 * "order" Int - The order of where this menu should be placed inside a group (Optional)
+                 * "icon" Bitmap - The icon of this menu (Optional)
+                 * "view" View - The view that you want to show when this menu is clicked (Optional)
+                 * "fragment" Fragment - The fragment that you want to show when this menu is clicked (Optional)
+                 *
+                 * You can only use either view or fragment
+                 */
                 createFunction("create_item") { args ->
                     val name = args["name"] as String
+                    val group = (args["group"] as? String)?.let {
+                        when (it) {
+                            "main" -> drawerMainGroupId
+                            "social" -> drawerSocialGroupId
+                            else -> null
+                        }
+                    }
+
+                    val orderInCategory = args["order"] as? Int
                     val icon = args["icon"] as? Bitmap
                     val view = args["view"] as? View
                     val fragment = args["fragment"] as? Fragment
 
-                    mainDrawerMenu.add(name)
-                    val menuItem = mainDrawerMenu.children.find { it.title == name }!!
+                    val menuItem = mainDrawerMenu.add(
+                        group ?: Menu.NONE,
+                        Menu.NONE,
+                        orderInCategory ?: Menu.NONE,
+                        name
+                    )
 
                     icon?.let { menuItem.icon = BitmapDrawable(context.resources, icon) }
 
@@ -120,10 +146,7 @@ class Essentials : Module() {
                             // then use the ModifiableViewFragment
                             registeredDrawerItems
                                 .add(
-                                    Pair(
-                                        name,
-                                        ModifiableViewFragment { _, _, _ -> view }
-                                    )
+                                    DrawerItem(name) { ModifiableViewFragment { _, _, _ -> view } }
                                 )
                         }
 
@@ -131,10 +154,7 @@ class Essentials : Module() {
                             // this module decided to make their own module, OK!
                             registeredDrawerItems
                                 .add(
-                                    Pair(
-                                        name,
-                                        fragment
-                                    )
+                                    DrawerItem(name) { fragment }
                                 )
                         }
 
@@ -143,7 +163,7 @@ class Essentials : Module() {
                             throw IllegalArgumentException("You need to at least provide a view or a fragment")
                     }
 
-                    return@createFunction null
+                    return@createFunction menuItem
                 }
             }
 
@@ -152,13 +172,12 @@ class Essentials : Module() {
                 val menuItem = it["menu_item"] as MenuItem
 
                 for (item in registeredDrawerItems) {
-                    val name = item.first
-                    val fragment = item.second
+                    val name = item.name
 
                     if (menuItem.title == name) {
                         fragmentManager
                             .beginTransaction()
-                            .replace(drawerFragContainerId, fragment)
+                            .replace(drawerFragContainerId, item.createFragment())
                             .addToBackStack(null)
                             .commit()
 
@@ -175,3 +194,8 @@ class Essentials : Module() {
 
     }
 }
+
+data class DrawerItem(
+    val name: String,
+    val createFragment: () -> Fragment,
+)
