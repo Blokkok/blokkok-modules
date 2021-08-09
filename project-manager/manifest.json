@@ -6,7 +6,7 @@
   "library_version": "0.1",
   "author": "Blokkok",
   "website": "https://github.com/Blokkok/blokkok-modules/tree/main/project-manager/",
-  "classpath": "com.blokkok.mod.project.manager.ProjectManager",
+  "classpath": "com.blokkok.mod.project.manager.ProjectManagerModule",
   "dependsOn": ["blokkok-essentials:1.0"],
   "jar": "module.jar"
 }
