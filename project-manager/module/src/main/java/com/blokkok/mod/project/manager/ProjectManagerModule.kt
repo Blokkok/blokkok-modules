@@ -18,7 +18,5 @@ class ProjectManagerModule : Module() {
         }
     }
 
-    override fun onUnloaded(comContext: CommunicationContext) {
-        // TODO: 8/5/21 Make this
-    }
+    override fun onUnloaded(comContext: CommunicationContext) { }
 }

@@ -1,6 +1,7 @@
 package com.blokkok.mod.project.manager
 
 import android.os.Bundle
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,11 +9,11 @@ import android.widget.FrameLayout
 import androidx.core.view.updateMargins
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 
 class ProjectsListFragment : Fragment() {
 
-    private lateinit var addProjectFAB: FloatingActionButton
+    private lateinit var addProjectFAB: ExtendedFloatingActionButton
     private lateinit var projectsListRecyclerView: RecyclerView
 
     override fun onCreateView(
@@ -38,12 +39,15 @@ class ProjectsListFragment : Fragment() {
         root.addView(projectsListRecyclerView)
 
         addProjectFAB =
-            FloatingActionButton(context).apply {
+            ExtendedFloatingActionButton(context).apply {
                 layoutParams = FrameLayout.LayoutParams(
                     /* width */ FrameLayout.LayoutParams.WRAP_CONTENT,
                     /* height */ FrameLayout.LayoutParams.WRAP_CONTENT
                 ).apply {
                     updateMargins(bottom = 16.dp, right = 16.dp)
+                    gravity = Gravity.END or Gravity.BOTTOM
+
+                    text = "Create Project"
                 }
             }
 
