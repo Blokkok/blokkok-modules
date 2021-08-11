@@ -24,10 +24,10 @@ const val PROJECT_MANAGER_IMPL_FLAG = "project-manager-impl"
  *     | Returns the configuration names needed when the user wants to create a project, example: package name
  *     | Currently, this module can only have String as values
  *
- *     func "initialize_project" args [ "project_folder": File, "project_config": Map<String, String> ] -> Unit
+ *     func "initialize_project" args [ "project_dir": File, "project_config": Map<String, String> ] -> Unit
  *     | Will be called when the user creates a project, you can initialize some stuff here
  *
- *     func "show_project_editor" -> Fragment
+ *     func "show_project_editor" args [ "project_dir": File ] -> Fragment
  *     | Used to show the project editor fragment when the user clicked on a project
  *     | If the user made a project, this will be called after func "initialize_project"
  * }

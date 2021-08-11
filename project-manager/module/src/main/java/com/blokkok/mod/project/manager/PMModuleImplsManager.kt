@@ -1,13 +1,19 @@
 package com.blokkok.mod.project.manager
 
+import androidx.fragment.app.Fragment
 import com.blokkok.modsys.communication.CommunicationContext
 import com.blokkok.modsys.communication.CommunicationType
+import java.io.File
 
 object PMModuleImplsManager {
     //                                  mod_name  mod_namespace
     private val implementations = HashMap<String, String>()
 
-    val implementationNames get() = implementations.keys
+    // doing this feels very off, I'm quite used to not allowing Context on a static scope
+    // also, yes, doing this is 100% A-OKAY, since the modules are also going to be stored
+    // in a static context in the module system, the communication context is also going
+    // to get garbage collected together with the modules
+    private lateinit var comContext: CommunicationContext
 
     fun getNamespace(name: String) = implementations[name]
 
@@ -19,9 +25,32 @@ object PMModuleImplsManager {
     }
 
     /**
+     * Opens the project editor
+     */
+    fun openProjectEditor(id: String, implementationName: String) {
+        val implementationNamespace = PMModuleImplsManager.getNamespace(implementationName)
+
+        // get the fragment
+        val projectEditorFrag =
+            comContext.invokeFunction(
+                "/$implementationNamespace/pm-impl",
+                "show_project_editor",
+                mapOf("project_dir" to File(ProjectManager.projectsDir, id))
+            ) as Fragment
+
+        // show the fragment
+        comContext.invokeFunction(
+            "/essentials/fragment",
+            "start_fragment",
+            mapOf("fragment" to projectEditorFrag)
+        )
+    }
+
+    /**
      * Gets the implementation of the given namespaces
      */
     fun getImplementations(namespaces: List<String>, comContext: CommunicationContext) {
+        this.comContext = comContext
         for (namespace in namespaces) {
             if (implementedCorrectly(namespace, comContext)) {
                 // get the name

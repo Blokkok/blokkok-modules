@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.core.view.updateMargins
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 
@@ -15,6 +16,7 @@ class ProjectsListFragment : Fragment() {
 
     private lateinit var addProjectFAB: ExtendedFloatingActionButton
     private lateinit var projectsListRecyclerView: RecyclerView
+    private lateinit var projectsAdapter: ProjectRecyclerViewAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -64,6 +66,15 @@ class ProjectsListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // TODO: 8/7/21 Implement listing projects
+        projectsAdapter = ProjectRecyclerViewAdapter()
+        projectsAdapter.projects.clear()
+        projectsAdapter.projects.addAll(ProjectManager.listProjects())
+
+        projectsListRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+        projectsListRecyclerView.adapter = projectsAdapter
+
+        addProjectFAB.setOnClickListener {
+
+        }
     }
 }
