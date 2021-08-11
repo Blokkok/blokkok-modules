@@ -26,7 +26,12 @@ class ProjectsListFragment : Fragment() {
         // compiled XML binaries, this process will go away and we would get a similar way to
         // find and get our views like android! I have high hopes! :^)
         val context = requireContext()
-        val root = FrameLayout(context)
+        val root = FrameLayout(context).apply {
+            layoutParams = ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT,
+            )
+        }
 
         projectsListRecyclerView =
             RecyclerView(context).apply {

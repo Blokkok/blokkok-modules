@@ -22,7 +22,17 @@ class ProjectManagerModule : Module() {
         }
     }
 
-    // TODO: 8/10/21 Add onAllLoaded event and get flags
+    override fun onAllLoaded(comContext: CommunicationContext) {
+        // since onAllLoaded can be called everytime the user loaded all the modules even though
+        // we have already been loaded, we needed to re-do the implementation checking again
+        PMModuleImplsManager.clear()
+
+        // get the flags
+        PMModuleImplsManager.getImplementations(
+            comContext.getFlagNamespaces(PROJECT_MANAGER_IMPL_FLAG),
+            comContext
+        )
+    }
 
     override fun onUnloaded(comContext: CommunicationContext) { }
 }
