@@ -7,6 +7,8 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.io.File
 
+const val METADATA_FILE = "project-metadata.json"
+
 object ProjectManager {
     lateinit var projectsDir: File
 
@@ -19,7 +21,7 @@ object ProjectManager {
 
     fun listProjects(): List<ProjectMetadata> =
         projectsDir.listFiles()!!.map {
-            Json.decodeFromString(it.resolve("project-metadata.json").readText())
+            Json.decodeFromString(it.resolve(METADATA_FILE).readText())
         }
 
     fun exists(id: String): Boolean = listProjects().any { it.id == id }
@@ -27,7 +29,7 @@ object ProjectManager {
     fun getProject(id: String): ProjectMetadata? {
         if (!exists(id)) return null
 
-        return Json.decodeFromString(File(projectsDir, "$id/meta.json").readText())
+        return Json.decodeFromString(File(projectsDir, "$id/$METADATA_FILE").readText())
     }
 
     fun removeProject(id: String): Boolean {
@@ -39,7 +41,7 @@ object ProjectManager {
         if (!exists(id)) return
 
         File(projectsDir, id)
-            .resolve("meta.json")
+            .resolve(METADATA_FILE)
             .writeText(Json.encodeToString(newMeta))
     }
 
@@ -50,11 +52,7 @@ object ProjectManager {
 
         projectDir.mkdir()
 
-        File(projectDir, "android").mkdir()     // Files required by the compiler
-        File(projectDir, "data").mkdir()        // Project files
-        File(projectDir, "cache").mkdir()       // Cache folder
-
-        File(projectDir, "meta.json").writeText(Json.encodeToString(metadata))
+        File(projectDir, METADATA_FILE).writeText(Json.encodeToString(metadata))
 
         return metadata
     }

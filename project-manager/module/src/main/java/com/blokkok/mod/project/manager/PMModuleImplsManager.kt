@@ -8,6 +8,8 @@ import java.io.File
 object PMModuleImplsManager {
     //                                  mod_name  mod_namespace
     private val implementations = HashMap<String, String>()
+    // TODO: 8/12/21 Implement saving the current implementation into a sharedpref or smth else
+    var currentImplementation: String? = null
 
     // doing this feels very off, I'm quite used to not allowing Context on a static scope
     // also, yes, doing this is 100% A-OKAY, since the modules are also going to be stored
@@ -15,6 +17,7 @@ object PMModuleImplsManager {
     // to get garbage collected together with the modules
     private lateinit var comContext: CommunicationContext
 
+    val implementationNames get() = implementations.keys
     fun getNamespace(name: String) = implementations[name]
 
     /**
@@ -25,10 +28,10 @@ object PMModuleImplsManager {
     }
 
     /**
-     * Opens the project editor
+     * Opens the project editor of the current implementation
      */
     fun openProjectEditor(id: String, implementationName: String) {
-        val implementationNamespace = PMModuleImplsManager.getNamespace(implementationName)
+        val implementationNamespace = getNamespace(implementationName)
 
         // get the fragment
         val projectEditorFrag =
@@ -45,6 +48,16 @@ object PMModuleImplsManager {
             mapOf("fragment" to projectEditorFrag)
         )
     }
+
+    /**
+     * Gets the new project configuration defined by the current implementation
+     */
+    @Suppress("UNCHECKED_CAST")
+    fun getProjectConfiguration(): List<String> =
+        comContext.invokeFunction(
+            "/$currentImplementation/pm-impl",
+            "new_project_config"
+        ) as List<String>
 
     /**
      * Gets the implementation of the given namespaces
