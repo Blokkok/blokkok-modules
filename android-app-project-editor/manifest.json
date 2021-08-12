@@ -1,0 +1,12 @@
+{
+  "id": "blokkok-android-app-projedit",
+  "name": "Android App Project Editor",
+  "description": "Android App Project Editor Module (AAPEM) is used to create, and edit android app projects in blokkok!",
+  "version": "1.0",
+  "library_version": "0.1",
+  "author": "Blokkok",
+  "website": "https://github.com/Blokkok/blokkok-modules/tree/main/android-app-project-editor/",
+  "classpath": "com.blokkok.mod.aapem.AAPEModule",
+  "dependsOn": ["blokkok-essentials:1.0", "blokkok-project-manager:1.0"],
+  "jar": "module.jar"
+}
