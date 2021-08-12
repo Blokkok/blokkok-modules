@@ -1,5 +1,6 @@
 package com.blokkok.mod.project.manager
 
+import android.content.Context
 import com.blokkok.modsys.communication.CommunicationContext
 import com.blokkok.modsys.modinter.Module
 
@@ -9,6 +10,9 @@ class ProjectManagerModule : Module() {
     override fun onLoaded(comContext: CommunicationContext) {
         comContext.run {
             claimFlag(PROJECT_MANAGER_IMPL_FLAG)
+
+            val context = comContext.invokeFunction("get_application_context") as Context
+            ProjectManager.initialize(context)
 
             val args = mapOf(
                 "name" to "Projects",

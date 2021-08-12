@@ -1,7 +1,6 @@
 package com.blokkok.mod.project.manager
 
 import android.content.Context
-import com.blokkok.modsys.communication.CommunicationContext
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -12,7 +11,7 @@ const val METADATA_FILE = "project-metadata.json"
 object ProjectManager {
     lateinit var projectsDir: File
 
-    fun initialize(context: Context, comContext: CommunicationContext) {
+    fun initialize(context: Context) {
         projectsDir = File(context.applicationInfo.dataDir, "projects")
 
         // create the projects folder if it doesn't exist
