@@ -64,6 +64,8 @@ class ProjectsListFragment : Fragment() {
             }
         }
 
+        linear.addView(implementationChooserSpinner)
+
         projectsListRecyclerView =
             RecyclerView(context).apply {
                 layoutParams = LinearLayout.LayoutParams(
