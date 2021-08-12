@@ -60,6 +60,22 @@ object PMModuleImplsManager {
         ) as List<String>
 
     /**
+     * Initializes a project based on the implementation given
+     */
+    fun initializeProject(projDir: File, projConf: Map<String, String>, implementationName: String) {
+        val args = mapOf(
+            "project_dir" to projDir,
+            "project_config" to projConf
+        )
+
+        comContext.invokeFunction(
+            "/$implementationName/pm-impl",
+            "initialize_project",
+            args
+        )
+    }
+
+    /**
      * Gets the implementation of the given namespaces
      */
     fun getImplementations(namespaces: List<String>, comContext: CommunicationContext) {

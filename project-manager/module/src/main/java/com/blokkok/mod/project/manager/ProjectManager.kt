@@ -49,6 +49,9 @@ object ProjectManager {
         val metadata = ProjectMetadata(id, name, conf, implName)
         val projectDir = File(projectsDir, id)
 
+        // call the implementation's initialize project
+        PMModuleImplsManager.initializeProject(projectDir, conf, implName)
+
         projectDir.mkdir()
 
         File(projectDir, METADATA_FILE).writeText(Json.encodeToString(metadata))
