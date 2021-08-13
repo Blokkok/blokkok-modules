@@ -104,9 +104,7 @@ class AAPEModule : Module() {
                 null
             }
 
-            createFunction("show_project_editor") {
-                
-            }
+            createFunction("show_project_editor") { ProjectEditorFragment() }
         }
         }
     }
