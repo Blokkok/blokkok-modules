@@ -5,9 +5,7 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
-import android.widget.LinearLayout
-import android.widget.Toolbar
+import android.widget.*
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
@@ -18,7 +16,7 @@ import com.google.android.material.tabs.TabLayoutMediator
 import java.io.File
 
 class ProjectEditorFragment(
-    val projectDir: File
+    val projectDir: ProjectDirPaths
 ) : Fragment() {
 
     override fun onCreateView(
@@ -132,11 +130,12 @@ class ProjectEditorFragment(
 
         val viewPager = view.findViewWithTag<ViewPager2>("fragments_view_pager")
         val tabLayout = view.findViewWithTag<TabLayout>("tab_layout")
+        val compileButton = view.findViewWithTag<Button>("compile_button")
 
         val editorAdapter = EditorPagerAdapter(
             requireActivity(),
-            projectDir.resolve("src/java"),
-            projectDir.resolve("src/res/layout"),
+            projectDir.javaSrc,
+            projectDir.resLayout,
         )
 
         viewPager.adapter = editorAdapter
@@ -148,5 +147,31 @@ class ProjectEditorFragment(
 //                2 -> tab.text = "MANIFEST"
             }
         }.attach()
+
+        compileButton.setOnClickListener {
+            // check if there is any impl
+            AAPEMImplementation.apkBuilderImpl?.let {
+                // alright, instantiate the fragment
+                val args = mapOf(
+                    "fragment" to it.showApkBuilderFragment(
+                        projectDir.cacheDir,
+                        projectDir.manifestFile,
+                        projectDir.javaSrc,
+                        projectDir.resFolder,
+                        projectDir.outputApk
+                    )
+                )
+
+                // then launch it!
+                AAPEModule
+                    .comContext
+                    .invokeFunction("/essentials", "show_fragment", args)
+
+            } ?: Toast.makeText(
+                requireContext(),
+                "There is no implementation of AAPEM Apk Builder, Try loading a module named \"Simple Apk Builder\"",
+                Toast.LENGTH_LONG
+            ).show()
+        }
     }
 }

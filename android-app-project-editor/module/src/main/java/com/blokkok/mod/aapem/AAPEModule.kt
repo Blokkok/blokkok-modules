@@ -9,6 +9,8 @@ class AAPEModule : Module() {
     override val flags: List<String> = listOf("project-manager-impl")
 
     override fun onLoaded(comContext: CommunicationContext) {
+        AAPEModule.comContext = comContext
+
         comContext.run {
         // project manager implementation
         namespace("pm-impl") {
@@ -105,7 +107,7 @@ class AAPEModule : Module() {
 
             createFunction("show_project_editor") {
                 val projectDir = it["project_dir"] as File
-                ProjectEditorFragment(projectDir)
+                ProjectEditorFragment(ProjectDirPaths(projectDir))
             }
         }
         }
@@ -113,5 +115,10 @@ class AAPEModule : Module() {
 
     override fun onUnloaded(comContext: CommunicationContext) {
 
+    }
+
+    companion object {
+        lateinit var comContext: CommunicationContext
+            private set
     }
 }

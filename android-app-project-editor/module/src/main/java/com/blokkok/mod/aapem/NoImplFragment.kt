@@ -11,7 +11,7 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 
 class NoImplFragment(
-    val implementationName: String
+    private val desc: String
 ) : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -66,7 +66,7 @@ class NoImplFragment(
                     )
                 )
 
-                text = implementationName
+                text = desc
             })
         }
     }
