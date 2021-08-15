@@ -13,3 +13,4 @@ include ':module-interface'
 include ':module-bridge-stub'
 project(':module-interface').projectDir = new File(rootDir, '../submodules/blokkok-modsys/module-interface/')
 project(':module-bridge-stub').projectDir = new File(rootDir, '../submodules/blokkok-modsys/module-bridge-stub/')
+include ':aapem-api-stub'

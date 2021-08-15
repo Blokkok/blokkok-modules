@@ -17,10 +17,6 @@ import com.google.android.material.tabs.TabLayout
 
 class ProjectEditorFragment : Fragment() {
 
-    private val toolbarMenu by lazy {
-
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,

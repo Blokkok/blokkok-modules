@@ -10,12 +10,6 @@ class AAPEModule : Module() {
 
     override fun onLoaded(comContext: CommunicationContext) {
         comContext.run {
-
-        // claim flags
-        claimFlag(CODE_EDITOR_IMPL_FLAG)
-        claimFlag(LAYOUT_EDITOR_IMPL_FLAG)
-        claimFlag(APK_BUILDER_IMPL_FLAG)
-
         // project manager implementation
         namespace("pm-impl") {
             createFunction("name") { "Blokkok AAPEM" }
@@ -112,11 +106,6 @@ class AAPEModule : Module() {
             createFunction("show_project_editor") { ProjectEditorFragment() }
         }
         }
-    }
-
-    override fun onAllLoaded(comContext: CommunicationContext) {
-        // scan implementations
-        ImplementationManager.scanImplementations(comContext)
     }
 
     override fun onUnloaded(comContext: CommunicationContext) {
