@@ -1,0 +1,11 @@
+{
+  "id": "blokkok-simple-apk-builder",
+  "name": "Simple Apk Builder",
+  "description": "Very simple apk builder for AAPEM",
+  "version": "1.0",
+  "library_version": "0.1",
+  "author": "Blokkok",
+  "website": "https://github.com/Blokkok/blokkok-modules/tree/main/simple-apk-builder/",
+  "classpath": "com.blokkok.mod.sab.SimpleApkBuilderModule",
+  "jar": "module.jar"
+}

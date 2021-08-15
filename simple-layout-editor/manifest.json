@@ -1,0 +1,11 @@
+{
+  "id": "blokkok-simple-layout-editor",
+  "name": "Simple Layout Editor",
+  "description": "Very simple layout editor for AAPEM",
+  "version": "1.0",
+  "library_version": "0.1",
+  "author": "Blokkok",
+  "website": "https://github.com/Blokkok/blokkok-modules/tree/main/simple-layout-editor/",
+  "classpath": "com.blokkok.mod.sle.SimpleLayoutEditorModule",
+  "jar": "module.jar"
+}

@@ -1,0 +1,11 @@
+{
+  "id": "blokkok-simple-code-editor",
+  "name": "Simple Code Editor",
+  "description": "Very simple code editor for AAPEM",
+  "version": "1.0",
+  "library_version": "0.1",
+  "author": "Blokkok",
+  "website": "https://github.com/Blokkok/blokkok-modules/tree/main/simple-code-editor/",
+  "classpath": "com.blokkok.mod.sce.SimpleCodeEditorModule",
+  "jar": "module.jar"
+}
