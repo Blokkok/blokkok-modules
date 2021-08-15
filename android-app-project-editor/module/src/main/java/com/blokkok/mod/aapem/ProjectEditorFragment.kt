@@ -14,8 +14,12 @@ import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
+import java.io.File
 
-class ProjectEditorFragment : Fragment() {
+class ProjectEditorFragment(
+    val projectDir: File
+) : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -86,6 +90,8 @@ class ProjectEditorFragment : Fragment() {
                     }
 
                 addView(ViewPager2(context).apply {
+                    tag = "editor_view_pager"
+
                     layoutParams = LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.MATCH_PARENT,
                         LinearLayout.LayoutParams.WRAP_CONTENT,
@@ -124,6 +130,23 @@ class ProjectEditorFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // TODO: 8/13/21 setup viewpager2 and compile button
+        val viewPager = view.findViewWithTag<ViewPager2>("fragments_view_pager")
+        val tabLayout = view.findViewWithTag<TabLayout>("tab_layout")
+
+        val editorAdapter = EditorPagerAdapter(
+            requireActivity(),
+            projectDir.resolve("src/java"),
+            projectDir.resolve("src/res/layout"),
+        )
+
+        viewPager.adapter = editorAdapter
+
+        TabLayoutMediator(tabLayout, viewPager) { tab, position ->
+            when (position) {
+                0 -> tab.text = "LAYOUT"
+                1 -> tab.text = "CODE"
+//                2 -> tab.text = "MANIFEST"
+            }
+        }.attach()
     }
 }

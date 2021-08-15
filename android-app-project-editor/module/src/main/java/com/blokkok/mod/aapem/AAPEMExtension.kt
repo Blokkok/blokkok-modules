@@ -7,11 +7,11 @@ sealed interface AAPEMExtension {
     val name: String
 
     interface CodeEditor : AAPEMExtension {
-        fun showCodeEditorFragment(file: File): Fragment
+        fun showCodeEditorFragment(javaSrc: File): Fragment
     }
 
     interface LayoutEditor : AAPEMExtension {
-        fun showLayoutEditorFragment(layoutFile: File): Fragment
+        fun showLayoutEditorFragment(resLayout: File): Fragment
     }
 
     interface ApkBuilder : AAPEMExtension {

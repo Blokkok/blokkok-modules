@@ -103,7 +103,10 @@ class AAPEModule : Module() {
                 null
             }
 
-            createFunction("show_project_editor") { ProjectEditorFragment() }
+            createFunction("show_project_editor") {
+                val projectDir = it["project_dir"] as File
+                ProjectEditorFragment(projectDir)
+            }
         }
         }
     }
