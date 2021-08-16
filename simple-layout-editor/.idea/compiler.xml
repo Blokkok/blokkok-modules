@@ -4,6 +4,8 @@
     <bytecodeTargetLevel target="1.7">
       <module name="Essentials.module" target="11" />
       <module name="ProjectManager.module" target="11" />
+      <module name="Simple_Layout_Editor.aapem-stub" target="11" />
+      <module name="Simple_Layout_Editor.module" target="11" />
     </bytecodeTargetLevel>
   </component>
 </project>
