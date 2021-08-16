@@ -58,9 +58,20 @@ class ProjectEditorFragment(
                             AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS or
                             AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL
 
-                        // FIXME: 8/13/21 Menu can't be built programmatically :(
-
                         title = "Editor"
+                    }
+
+                    val chooseImplItem = menu.add("Choose Implementation(s)")
+                    chooseImplItem.setOnMenuItemClickListener {
+                        val args = mapOf(
+                            "fragment" to ImplementationChooserFragment()
+                        )
+
+                        AAPEModule
+                            .comContext
+                            .invokeFunction("/essentials", "show_fragment", args)
+
+                        true
                     }
                 })
 
