@@ -178,6 +178,8 @@ class ProjectEditorFragment(
                     .comContext
                     .invokeFunction("/essentials", "show_fragment", args)
 
+                true // so that we wouldn't trigger the toast
+
             } ?: Toast.makeText(
                 requireContext(),
                 "There is no implementation of AAPEM Apk Builder, Try loading a module named \"Simple Apk Builder\"",
