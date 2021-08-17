@@ -9,7 +9,9 @@ dependencyResolutionManagement {
 
 rootProject.name = "Simple Apk Builder"
 include ':module'
+include ':aapem-stub'
 include ':module-interface'
 include ':module-bridge-stub'
+project(':aapem-stub').projectDir = new File(rootDir, '../android-app-project-editor/aapem-api-stub')
 project(':module-interface').projectDir = new File(rootDir, '../submodules/blokkok-modsys/module-interface/')
 project(':module-bridge-stub').projectDir = new File(rootDir, '../submodules/blokkok-modsys/module-bridge-stub/')

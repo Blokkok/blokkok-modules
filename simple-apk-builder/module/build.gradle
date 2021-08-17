@@ -35,6 +35,7 @@ android {
 
 dependencies {
     compileOnly project(":module-bridge-stub")
+    compileOnly project(":aapem-stub")
     implementation project(":module-interface")
 
     implementation 'androidx.core:core-ktx:1.6.0'
