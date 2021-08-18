@@ -7,5 +7,6 @@
   "author": "Blokkok",
   "website": "https://github.com/Blokkok/blokkok-modules/tree/main/simple-apk-builder/",
   "classpath": "com.blokkok.mod.sab.SimpleApkBuilderModule",
+  "assets": "assets",
   "jar": "module.jar"
 }

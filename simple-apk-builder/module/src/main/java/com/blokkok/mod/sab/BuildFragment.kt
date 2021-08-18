@@ -85,11 +85,6 @@ class BuildFragment : Fragment() {
 
     private val compileExecutor = Executors.newSingleThreadExecutor()
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        // TODO: 8/18/21 create an object that compile stuff so that it's separated from the ui stuff here
-    }
-
     companion object {
         fun newInstance(
             cacheDir: File,

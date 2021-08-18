@@ -8,6 +8,12 @@ class SimpleApkBuilderModule : Module() {
     override val namespace: String get() = "blokkok-simple-code-editor"
 
     override fun onLoaded(comContext: CommunicationContext) {
+        AssetsPaths.init(
+            assets
+                ?: throw IllegalStateException(
+                    "Simple APK Builder Module's assets doesn't seem to have been extracted"
+                )
+        )
         AAPEMImplementation.registerImplementation(SABApkBuilderImpl())
     }
 
