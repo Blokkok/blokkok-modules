@@ -1,4 +1,4 @@
-package com.blokkok.mod.sce
+package com.blokkok.mod.sab
 
 import androidx.fragment.app.Fragment
 import com.blokkok.mod.aapem.extensions.AAPEMExtension
