@@ -11,9 +11,14 @@ class SABApkBuilderImpl : AAPEMExtension.ApkBuilder {
         javaSrc: File,
         resFolder: File,
         outputApk: File,
-    ): Fragment {
-        TODO("Not yet implemented")
-    }
+    ): Fragment =
+        BuildFragment.newInstance(
+            cacheDir,
+            manifestFile,
+            javaSrc,
+            resFolder,
+            outputApk
+        )
 
 
     override val name: String get() = "Blokkok Simple Apk Builder"
