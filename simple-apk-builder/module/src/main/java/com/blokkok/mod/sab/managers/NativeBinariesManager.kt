@@ -66,6 +66,7 @@ object NativeBinariesManager {
         }.run()
     }
 
+    @Throws(IOException::class)
     fun executeCommand(
         binary: NativeBinaries,
         arguments: Array<String>,
@@ -104,6 +105,7 @@ object NativeBinariesManager {
     }
 }
 
+@Throws(IOException::class)
 private fun InputStream.redirectTo(out: (String) -> Unit) {
     Thread {
         BufferedReader(InputStreamReader(this)).also { reader ->
