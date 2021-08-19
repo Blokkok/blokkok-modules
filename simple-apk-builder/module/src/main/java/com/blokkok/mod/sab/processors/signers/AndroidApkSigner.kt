@@ -10,8 +10,7 @@ import java.io.InputStreamReader
 object AndroidApkSigner : ApkSigner {
     override val name: String = "ApkSigner"
 
-    @Suppress("BlockingMethodInNonBlockingContext")
-    override suspend fun sign(
+    override fun sign(
         apkFile: File,
         outputApk: File,
         privateKey: File,

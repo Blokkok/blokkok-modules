@@ -13,8 +13,7 @@ object ECJCompiler : JavaCompiler {
 
     override val name: String get() = "ECJ"
 
-    @Suppress("BlockingMethodInNonBlockingContext")
-    override suspend fun compileJava(
+    override fun compileJava(
         inputFolders: Array<File>,
         outputFolder: File,
         stdout: (String) -> Unit,

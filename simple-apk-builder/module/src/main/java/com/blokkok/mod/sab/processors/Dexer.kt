@@ -5,7 +5,7 @@ import java.io.File
 interface Dexer {
     val name: String
 
-    suspend fun dex(
+    fun dex(
         folderOrFile: File,
         output: File,
         stdout: (String) -> Unit,

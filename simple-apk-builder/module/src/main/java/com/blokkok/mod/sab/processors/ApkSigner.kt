@@ -5,7 +5,7 @@ import java.io.File
 interface ApkSigner {
     val name: String
 
-    suspend fun sign(
+    fun sign(
         apkFile: File,
         outputApk: File,
         privateKey: File,

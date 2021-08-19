@@ -7,11 +7,7 @@ import java.io.File
 object DxDexer : Dexer {
     override val name: String get() = "Dx"
 
-    override fun initialize(context: Context, assetsFolder: File) {
-        TODO("Dx is not yet implemented")
-    }
-
-    override suspend fun dex(
+    override fun dex(
         folderOrFile: File,
         output: File,
         stdout: (String) -> Unit,

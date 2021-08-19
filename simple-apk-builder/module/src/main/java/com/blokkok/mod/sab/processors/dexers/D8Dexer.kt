@@ -11,8 +11,7 @@ object D8Dexer : Dexer {
 
     override val name: String get() = "D8"
 
-    @Suppress("BlockingMethodInNonBlockingContext")
-    override suspend fun dex(
+    override fun dex(
         folderOrFile: File,
         output: File,
         stdout: (String) -> Unit,
