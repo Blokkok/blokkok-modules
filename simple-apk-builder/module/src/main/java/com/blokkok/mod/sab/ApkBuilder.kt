@@ -1,6 +1,8 @@
 package com.blokkok.mod.sab
 
 import com.blokkok.mod.sab.managers.NativeBinariesManager
+import com.blokkok.mod.sab.processors.Dexer
+import com.blokkok.mod.sab.processors.JavaCompiler
 import com.blokkok.mod.sab.processors.ProcessorPicker
 import java.io.File
 import java.io.IOException
@@ -19,7 +21,14 @@ class ApkBuilder(
 ) {
     // cache locations
     private val resZipOutput = cacheDir.resolve("res.zip")
-    private val javaClasses = cacheDir.resolve("classes")
+
+    private val compiledClasses by lazy {
+        cacheDir.resolve("classes").also { it.mkdirs() }
+    }
+
+    private val compiledDexes by lazy {
+        cacheDir.resolve("dex").also { it.mkdirs() }
+    }
 
     private val javaGen by lazy {
         cacheDir.resolve("gen").also { it.mkdirs() }
@@ -49,6 +58,25 @@ class ApkBuilder(
 
         // alright let's compile the resources of this app
         exec.compileResWithAAPT2(resFolder)
+
+        // then link them
+        exec.linkResWithAAPT2(AssetsPaths.androidJar, resZipOutput, manifestFile, javaGen, outputApk)
+
+        // compile java sources
+        exec.compileJava(
+            compiler,
+            listOf(javaSrc, javaGen),
+            compiledClasses
+        )
+
+        // dex classes
+        exec.dexClasses(
+            dexer,
+            compiledClasses,
+            compiledDexes
+        )
+
+        // TODO: 8/19/21 use ApkBuilder and ApkSigner
     }
 
     /**
@@ -61,7 +89,7 @@ class ApkBuilder(
          */
         @Throws(IOException::class)
         fun compileResWithAAPT2(resFolder: File): Int {
-            updateStatus(BuildStatus.CompilingRes)
+            status = BuildStatus.CompilingRes
             logOut("Compiling resources with AAPT2")
 
             return NativeBinariesManager.executeCommand(
@@ -72,8 +100,74 @@ class ApkBuilder(
                     "-o", resZipOutput.absolutePath,
                     "-v" // verbose boi
                 ),
-                { logOut("AAPT2 >> $it") },
-                { logOut("AAPT2 >> $it") }, // aapt2 for some reason output it's logs into stderr
+                { logOut("AAPT2 C >> $it") },
+                { logOut("AAPT2 C >> $it") }, // aapt2 for some reason output it's logs into stderr
+            )
+        }
+
+        @Throws(IOException::class)
+        fun linkResWithAAPT2(
+            androidJar: File,
+            compiledResZip: File,
+            manifestFile: File,
+            javaGen: File,
+            outputApk: File,
+        ): Int {
+            status = BuildStatus.LinkingRes
+            logOut("Linking resources with AAPT2")
+
+            return NativeBinariesManager.executeCommand(
+                NativeBinariesManager.NativeBinaries.AAPT2,
+                arrayOf(
+                    "link",
+                    "-I", androidJar.absolutePath,
+                    "--auto-add-overlay",
+                    "--allow-reserved-package-id",
+                    "--no-version-vectors",
+                    "--min-sdk-version", "21", // TODO: 7/20/21 add these to the project metadata
+                    "--target-sdk-version", "30",
+                    "--version-code", "1",
+                    "--version-name", "1.0",
+                    "--manifest", manifestFile.absolutePath,
+                    "--java", javaGen.absolutePath,
+                    "-o", outputApk.absolutePath,
+                    compiledResZip.absolutePath,
+                    "-v"
+                ),
+                { logOut("AAPT2 L >> $it") },
+                { logOut("AAPT2 L >> $it") }, // aapt2 for some reason output it's logs into stderr
+            )
+        }
+
+        @Throws(IOException::class)
+        fun compileJava(
+            compiler: JavaCompiler,
+            sources: List<File>,
+            compiledClasses: File,
+        ): Int {
+            status = BuildStatus.CompilingJavaSrc
+            logOut("${compiler.name} is compiling java sources")
+
+            return compiler.compileJava(
+                sources.toTypedArray(),
+                compiledClasses,
+                { logOut("${compiler.name} >> ") },
+                { logOut("${compiler.name} ERR >> ") },
+            )
+        }
+
+        @Throws(IOException::class)
+        fun dexClasses(
+            dexer: Dexer,
+            classesFolder: File,
+            outputFolder: File,
+        ): Int {
+            status = BuildStatus.Dexifying
+            logOut("${dexer.name} is dexifying classes")
+
+            return dexer.dex(classesFolder, outputFolder,
+                { logOut("${dexer.name} >> $it") },
+                { logOut("${dexer.name} ERR >> $it") },
             )
         }
     }
