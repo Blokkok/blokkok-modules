@@ -83,7 +83,21 @@ class BuildFragment : Fragment() {
         }
     }
 
-    private val compileExecutor = Executors.newSingleThreadExecutor()
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val buildLog = view.findViewWithTag<TextView>("build_log")
+
+        ApkBuilder(
+            cacheDir,
+            manifestFile,
+            javaSrc,
+            resFolder,
+            outputApk,
+            { buildLog.append("\n$it") },
+            { buildLog.append("Build status updated to: ${it.displayText}") },
+        ).performCompilation()
+    }
 
     companion object {
         fun newInstance(
