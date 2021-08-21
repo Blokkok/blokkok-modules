@@ -55,56 +55,73 @@ class ApkBuilder(
     }
 
     private fun compile() {
-        // pick processors
-        val compiler = ProcessorPicker.pickCompiler()
-        val dexer = ProcessorPicker.pickDexer()
-        val signer = ProcessorPicker.pickSigner()
+        kotlin.runCatching {
+            // pick processors
+            val compiler = ProcessorPicker.pickCompiler()
+            val dexer = ProcessorPicker.pickDexer()
+            val signer = ProcessorPicker.pickSigner()
 
-        val exec = ExecImpl()
+            val exec = ExecImpl()
 
-        // alright let's compile the resources of this app
-        exec.compileResWithAAPT2(resFolder)
+            // alright let's compile the resources of this app
+            exec.compileResWithAAPT2(resFolder)
 
-        // then link them
-        exec.linkResWithAAPT2(AssetsPaths.androidJar, resZipOutput, manifestFile, javaGen, outputApk)
+            // then link them
+            exec.linkResWithAAPT2(AssetsPaths.androidJar,
+                resZipOutput,
+                manifestFile,
+                javaGen,
+                outputApk)
 
-        // compile java sources
-        exec.compileJava(
-            compiler,
-            listOf(javaSrc, javaGen),
-            compiledClasses
-        )
+            // compile java sources
+            exec.compileJava(
+                compiler,
+                listOf(javaSrc, javaGen),
+                compiledClasses
+            )
 
-        // dex classes
-        exec.dexClasses(
-            dexer,
-            compiledClasses,
-            compiledDexes
-        )
+            // dex classes
+            exec.dexClasses(
+                dexer,
+                compiledClasses,
+                compiledDexes
+            )
 
-        // Build the APK
-        exec.buildApk(
-            compiledDexes,
-            resZipOutput,
-            outputApk
-        )
+            // Build the APK
+            exec.buildApk(
+                compiledDexes,
+                resZipOutput,
+                outputApk
+            )
 
-        // TODO: 8/21/21 zipalign is not necessary but ok
+            // TODO: 8/21/21 zipalign is not necessary but ok
 
-        // Sign the apk!
-        exec.signApk(
-            signer,
+            // Sign the apk!
+            exec.signApk(
+                signer,
 
-            outputApk,
-            outputApk,
+                outputApk,
+                outputApk,
 
-            CommonFilesManager.testKeyPublicKey,
-            CommonFilesManager.testKeyPrivateKey,
-        )
+                CommonFilesManager.testKeyPublicKey,
+                CommonFilesManager.testKeyPrivateKey,
+            )
 
-        // and we're done!
-        status = BuildStatus.Success
-        logOut("Finished!")
+            // return Unit
+            return@runCatching
+        }.onFailure { exception ->
+            val message = exception.message
+
+            status = message?.let { BuildStatus.Failure(it) }
+                ?: BuildStatus.Failure(exception.toString())
+
+            logOut("Build failed with exception: \n${exception.stackTraceToString()}")
+
+        }.onSuccess {
+            // yay!
+            status = BuildStatus.Success
+            logOut("Build Successful! APK file is saved at: ${outputApk.absolutePath}")
+        }
     }
 
     /**
