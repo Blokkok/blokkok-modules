@@ -1,7 +1,9 @@
 package com.blokkok.mod.sab
 
 import com.android.sdklib.build.ApkBuilder
+import com.blokkok.mod.sab.managers.CommonFilesManager
 import com.blokkok.mod.sab.managers.NativeBinariesManager
+import com.blokkok.mod.sab.processors.ApkSigner
 import com.blokkok.mod.sab.processors.Dexer
 import com.blokkok.mod.sab.processors.JavaCompiler
 import com.blokkok.mod.sab.processors.ProcessorPicker
@@ -9,6 +11,7 @@ import java.io.File
 import java.io.IOException
 import java.io.OutputStream
 import java.io.PrintStream
+import java.security.PrivateKey
 import java.util.concurrent.Executors
 import kotlin.properties.Delegates
 
@@ -47,11 +50,11 @@ class ApkBuilder(
         updateStatus(BuildStatus.Initializing)
 
         compileExecutor.submit {
-            compile(updateStatus)
+            compile()
         }
     }
 
-    private fun compile(updateStatus: (BuildStatus) -> Unit) {
+    private fun compile() {
         // pick processors
         val compiler = ProcessorPicker.pickCompiler()
         val dexer = ProcessorPicker.pickDexer()
@@ -88,7 +91,20 @@ class ApkBuilder(
 
         // TODO: 8/21/21 zipalign is not necessary but ok
 
-        // TODO: 8/21/21 sign the apk with debug key
+        // Sign the apk!
+        exec.signApk(
+            signer,
+
+            outputApk,
+            outputApk,
+
+            CommonFilesManager.testKeyPublicKey,
+            CommonFilesManager.testKeyPrivateKey,
+        )
+
+        // and we're done!
+        status = BuildStatus.Success
+        logOut("Finished!")
     }
 
     /**
@@ -211,6 +227,29 @@ class ApkBuilder(
             apkBuilder.sealApk()
         }
 
+        @Throws(IOException::class)
+        fun signApk(
+            signer: ApkSigner,
+
+            inputApk: File,
+            outputApk: File,
+
+            keyPublicKey: File,
+            keyPrivateKey: File,
+        ): Int {
+            status = BuildStatus.SigningApk
+            logOut("Signing apk with ${signer.name}")
+
+            return signer.sign(
+                inputApk,
+                outputApk,
+                keyPrivateKey,
+                keyPublicKey,
+                { logOut("${signer.name} >> ") },
+                { logOut("${signer.name} ERR >> ") },
+            )
+        }
+
         inner class OutputStreamLogger(
             private val prefix: String
         ) : OutputStream() {
@@ -262,7 +301,11 @@ sealed class BuildStatus {
     }
 
     object BuildingApk : BuildStatus() {
-        override val displayText = "Builing APK"
+        override val displayText = "Building APK"
+    }
+
+    object SigningApk : BuildStatus() {
+        override val displayText: String = "Signing APK"
     }
 
     data class Failure(val text: String) : BuildStatus() {
