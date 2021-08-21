@@ -1,11 +1,14 @@
 package com.blokkok.mod.sab
 
+import com.android.sdklib.build.ApkBuilder
 import com.blokkok.mod.sab.managers.NativeBinariesManager
 import com.blokkok.mod.sab.processors.Dexer
 import com.blokkok.mod.sab.processors.JavaCompiler
 import com.blokkok.mod.sab.processors.ProcessorPicker
 import java.io.File
 import java.io.IOException
+import java.io.OutputStream
+import java.io.PrintStream
 import java.util.concurrent.Executors
 import kotlin.properties.Delegates
 
@@ -76,7 +79,16 @@ class ApkBuilder(
             compiledDexes
         )
 
-        // TODO: 8/19/21 use ApkBuilder and ApkSigner
+        // Build the APK
+        exec.buildApk(
+            compiledDexes,
+            resZipOutput,
+            outputApk
+        )
+
+        // TODO: 8/21/21 zipalign is not necessary but ok
+
+        // TODO: 8/21/21 sign the apk with debug key
     }
 
     /**
@@ -165,10 +177,56 @@ class ApkBuilder(
             status = BuildStatus.Dexifying
             logOut("${dexer.name} is dexifying classes")
 
-            return dexer.dex(classesFolder, outputFolder,
+            return dexer.dex(
+                classesFolder, outputFolder,
                 { logOut("${dexer.name} >> $it") },
                 { logOut("${dexer.name} ERR >> $it") },
             )
+        }
+
+        fun buildApk(
+            folderOfDexes: File,
+            resZip: File,
+            outputApk: File,
+        ) {
+            status = BuildStatus.BuildingApk
+            logOut("ApkBuilder is building the APK")
+
+            val apkBuilder = ApkBuilder(
+                outputApk,
+                resZip,
+                null,
+                null,
+                null,
+                PrintStream(OutputStreamLogger("ApkBuilder >> "))
+            )
+
+            // add the dexes
+            for (dex in folderOfDexes.listFiles()!!) {
+                apkBuilder.addFile(dex, dex.name)
+            }
+
+            // then seal it
+            apkBuilder.setDebugMode(false)
+            apkBuilder.sealApk()
+        }
+
+        inner class OutputStreamLogger(
+            private val prefix: String
+        ) : OutputStream() {
+
+            private val buffer = StringBuilder()
+
+            override fun write(b: Int) {
+                val char = b.toChar()
+
+                if (char == '\n') {
+                    logOut("$prefix$buffer")
+                    buffer.clear()
+                } else {
+                    buffer.append(char)
+                }
+            }
         }
     }
 }
