@@ -1,7 +1,31 @@
 # Blokkok Modules
 Essential modules used for blokkok to function properly as an Android IDE, this is where you want to edit it's IDE features, like project editing, code editor, layout editor, etc.
 
-## Modules Inside
+## Building
+### Everything
+Building every modules here is very simple, what you need is a: \*nix machine, sh, java and make sure you can run gradle on your machine. Then you can run the script [`build-everything.sh`](https://github.com/Blokkok/blokkok-modules/blob/main/build-everything.sh) to build everything:
+```console
+$ ./build-everyting.sh
+```
+Wait for a few minutes for it to build. Finally, a directory named `built-modules` will pop up, that's where all the compiled modules are located
+
+### Just a module
+Building a module is not that hard either, the steps are:
+ - Build the module like building an android APK
+   ```console
+   ./gradlew assembleDebug # or assembleRelease if you wanted the juicy optimized apks
+   ```
+ - Put the compiled APK into a zip together with the `manifest.json` file
+   ```console
+   $ # move this compiled apk to the current dir as module.jar
+   $ cp ????/build/outputs/apk/debug/????-????.apk module.jar
+   
+   $ # then zip it together with manifest.json
+   $ zip compiled-module.zip module.jar manifest.json
+   ```
+ - And you're done!
+
+## What are these modules?
 ### Essentials
 This essentials module is used to easily do stuff without having to write them yourself, just call a single communication function. Note: Might migrate this into using a stub instead rather than the communication API because it sucks.
 
