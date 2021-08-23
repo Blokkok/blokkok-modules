@@ -7,5 +7,6 @@
   "author": "Blokkok",
   "website": "https://github.com/Blokkok/blokkok-modules/tree/main/simple-code-editor/",
   "classpath": "com.blokkok.mod.sce.SimpleCodeEditorModule",
+  "depends_on": ["blokkok-aapem:1.0"],
   "jar": "module.jar"
 }

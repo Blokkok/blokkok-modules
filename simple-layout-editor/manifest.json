@@ -7,5 +7,6 @@
   "author": "Blokkok",
   "website": "https://github.com/Blokkok/blokkok-modules/tree/main/simple-layout-editor/",
   "classpath": "com.blokkok.mod.sle.SimpleLayoutEditorModule",
+  "depends_on": ["blokkok-aapem:1.0"],
   "jar": "module.jar"
 }
