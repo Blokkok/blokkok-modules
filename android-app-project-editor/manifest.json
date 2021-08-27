@@ -7,6 +7,6 @@
   "author": "Blokkok",
   "website": "https://github.com/Blokkok/blokkok-modules/tree/main/android-app-project-editor/",
   "classpath": "com.blokkok.mod.aapem.AAPEModule",
-  "dependsOn": ["blokkok-essentials:1.0", "blokkok-project-manager:1.0"],
+  "depends_on": ["blokkok-essentials:1.0", "blokkok-project-manager:1.0"],
   "jar": "module.jar"
 }
