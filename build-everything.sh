@@ -1,3 +1,4 @@
+#!/usr/bin/env sh
 # My bash skills are bad, someone fix these :I
 
 # remove the built-modules folder if it exists
